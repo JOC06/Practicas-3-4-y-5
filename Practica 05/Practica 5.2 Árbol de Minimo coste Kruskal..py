@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 25 00:38:52 2023
+
+@author: Dell
+"""
+
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def kruskal(graph):
+    mst = nx.Graph()
+    edges = sorted(graph.edges(data=True), key=lambda x: x[2]['weight'])
+    mst.add_nodes_from(graph.nodes())
+
+    for edge in edges:
+        if not nx.has_path(mst, edge[0], edge[1]):
+            mst.add_edge(edge[0], edge[1], weight=edge[2]['weight'])
+
+    return mst
+
+if __name__ == "__main__":
+    G = nx.Graph()
+    G.add_edge('A', 'B', weight=4)
+    G.add_edge('A', 'C', weight=2)
+    G.add_edge('B', 'C', weight=5)
+    G.add_edge('B', 'D', weight=10)
+    G.add_edge('C', 'D', weight=3)
+    G.add_edge('C', 'E', weight=8)
+    G.add_edge('D', 'E', weight=7)
+
+    minimum_spanning_tree = kruskal(G)
+
+    pos = nx.spring_layout(G)
+    nx.draw(G, pos, with_labels=True)
+    labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+    nx.draw_networkx_edges(G, pos, edgelist=minimum_spanning_tree.edges(), edge_color='r', width=2)
+    plt.show()
+
+    print("Aristas del Árbol de Expansión Mínima de Kruskal:")
+    for edge in minimum_spanning_tree.edges(data=True):
+        print(f"{edge[0]} - {edge[1]}: Peso {edge[2]['weight']}")
