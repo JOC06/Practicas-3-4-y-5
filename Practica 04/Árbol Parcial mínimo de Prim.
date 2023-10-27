@@ -1,0 +1,48 @@
+import sys
+
+# Definir una función para encontrar el vértice con la clave mínima en el diccionario
+def min_key_vertex(key, mst_set):
+    min_key = sys.maxsize
+    min_vertex = None
+
+    for vertex in key:
+        if key[vertex] < min_key and vertex not in mst_set:
+            min_key = key[vertex]
+            min_vertex = vertex
+
+    return min_vertex
+
+# Función para imprimir el Árbol Parcial Mínimo de Prim
+def print_mst(parent, graph):
+    print("Árbol Parcial Mínimo de Prim:")
+    for i in range(1, len(graph)):
+        print(f"Arista: {parent[i]} - {i}, Peso: {graph[i][parent[i]]}")
+
+# Función principal para encontrar el Árbol Parcial Mínimo de Prim
+def prim_mst(graph):
+    num_vertices = len(graph)
+    key = {i: sys.maxsize for i in range(num_vertices)}  # Inicializar todas las claves en infinito
+    parent = {i: None for i in range(num_vertices)}  # Inicializar todos los padres como None
+    key[0] = 0
+    mst_set = set()
+
+    for _ in range(num_vertices):
+        u = min_key_vertex(key, mst_set)
+        mst_set.add(u)
+
+        for v in range(num_vertices):
+            if graph[u][v] > 0 and v not in mst_set and graph[u][v] < key[v]:
+                key[v] = graph[u][v]
+                parent[v] = u
+
+    print_mst(parent, graph)
+
+# Ejemplo de uso
+graph = {
+    0: {0: 0, 1: 2, 2: 4, 3: 1},
+    1: {0: 2, 1: 0, 2: 3, 3: 7},
+    2: {0: 4, 1: 3, 2: 0, 3: 5},
+    3: {0: 1, 1: 7, 2: 5, 3: 0}
+}
+
+prim_mst(graph)
